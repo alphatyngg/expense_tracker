@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -11,6 +13,48 @@ struct Expense {        //grouping related variables under "Expense"
     string description;
     double amount;
 };
+
+void saveExpenses(const vector<Expense>& expenses) {
+    ofstream f("expenses.csv");
+    for (const auto& a : expenses) {
+        f << a.date << ',' 
+          << a.category << ','
+          << a.description << ','
+          << a.amount << endl;
+    }
+}
+
+vector<Expense> loadExpenses() {
+    vector<Expense> expenses;
+    ifstream f("expenses.csv");
+
+    if (!f.is_open()) {
+        return expenses;
+    }
+
+    string line;
+    
+    while (getline(f, line)) {
+        istringstream ss(line);
+        Expense a;
+        string amount;
+
+        getline(ss, a.date, ',');
+        getline(ss, a.category, ',');
+        getline(ss, a.description, ',');
+        getline(ss, amount, ',');
+
+        try {
+            a.amount = stod(amount);
+        } catch (...) {
+            continue;
+        }
+        
+        expenses.push_back(a);
+    }
+
+    return expenses;
+}
 
 void addExpense(vector<Expense>& expenses) {
     Expense a;
@@ -30,6 +74,7 @@ void addExpense(vector<Expense>& expenses) {
     a.amount = stod(amount);        //convert type string -> double
     
     expenses.push_back(a);          //creates the whole list
+    saveExpenses(expenses);
     cout << "Expense Saved." << endl;
 }
 
@@ -69,7 +114,7 @@ void listExpenses(const vector<Expense>& expenses) {
 }
 
 int main() {
-    vector<Expense> expenses;
+    vector<Expense> expenses = loadExpenses();
 
     while (true) {
         cout << "\n1. Add Expense" << endl;
