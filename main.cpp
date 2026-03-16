@@ -15,7 +15,7 @@ struct Expense {        //grouping related variables under "Expense"
 };
 
 void saveExpenses(const vector<Expense>& expenses) {
-    ofstream f("expenses.csv");
+    ofstream f("expenses.csv");     //opens file for writing
     for (const auto& a : expenses) {
         f << a.date << ',' 
           << a.category << ','
@@ -26,7 +26,7 @@ void saveExpenses(const vector<Expense>& expenses) {
 
 vector<Expense> loadExpenses() {
     vector<Expense> expenses;
-    ifstream f("expenses.csv");
+    ifstream f("expenses.csv");     //opens file for reading
 
     if (!f.is_open()) {
         return expenses;
@@ -35,8 +35,8 @@ vector<Expense> loadExpenses() {
     string line;
     
     while (getline(f, line)) {
-        istringstream ss(line);
-        Expense a;
+        istringstream ss(line);     //turns one line of csv into a stream 
+        Expense a;                  //and be able to split it apart to read
         string amount;
 
         getline(ss, a.date, ',');
@@ -46,10 +46,10 @@ vector<Expense> loadExpenses() {
 
         try {
             a.amount = stod(amount);
-        } catch (...) {
-            continue;
+        } catch (...) {     //catch any error (like forcing "abc" with "stod" into a number would crash)
+            continue;       //skip current expense, move on to next line
         }
-        
+
         expenses.push_back(a);
     }
 
@@ -92,7 +92,7 @@ void listExpenses(const vector<Expense>& expenses) {
          << right
          << setw(9) << "Amount" << endl;
 
-    cout << string(60, '-') << endl;
+    cout << string(65, '-') << endl;
 
     double total = 0;
 
@@ -108,9 +108,44 @@ void listExpenses(const vector<Expense>& expenses) {
         
         total += a.amount;
     }
-    cout << string(60, '-') << endl;
+    cout << string(65, '-') << endl;
     cout << right << setw(53) << "Total: $"
          << fixed << setprecision(2) << total << endl;
+}
+
+void summaryByCategory(const vector<Expense>& expenses) {
+    if (expenses.empty()) {
+        cout << "No Expenses Yet." << endl;
+        return;
+    }
+
+    vector<string> lists;
+
+    for (const auto& a : expenses) {
+        if (find(lists.begin(), lists.end(), a.category) == lists.end()) {      //category matching
+            lists.push_back(a.category);
+        }
+    }
+
+    cout << "\n";
+    cout << string(35, '-') << '\n';
+    double grand = 0.0;
+
+    for (const auto& list : lists) {
+        double sum = 0.0;
+        for (const auto& a : expenses) {
+            if (a.category == list) {
+                sum += a.amount;
+            }
+        }
+        cout << left << setw(20) << list
+             << right << "$" << fixed << setprecision(2) << sum << endl;
+        grand += sum;
+    }
+
+    cout << string(35, '-') << endl;
+    cout << left << setw(20) << "Total: "
+         << right << "$" << fixed << setprecision(2) << grand << endl;
 }
 
 int main() {
@@ -119,7 +154,8 @@ int main() {
     while (true) {
         cout << "\n1. Add Expense" << endl;
         cout << "2. List Expenses" << endl;
-        cout << "3. Quit" << endl;
+        cout << "3. Summary By Category" << endl;
+        cout << "4. Quit" << endl;
         cout << "Selection: ";
 
         string selection;
@@ -130,10 +166,13 @@ int main() {
         } else if (selection == "2") {
             listExpenses(expenses);
         } else if (selection == "3") {
-            cout << "Goodbye!" << endl;
+            summaryByCategory(expenses);
+        } else if (selection == "4") {
+            cout << "\n";
+            cout << "Goodbye!\n" << endl;
             break;
         } else {
-            cout << "work in progress..." << endl;
+            cout << "work in progress" << endl;
         }
     }
 
