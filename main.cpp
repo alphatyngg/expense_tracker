@@ -148,6 +148,35 @@ void summaryByCategory(const vector<Expense>& expenses) {
          << right << "$" << fixed << setprecision(2) << grand << endl;
 }
 
+void deleteExpense(vector<Expense>& expenses) {
+    if (expenses.empty()) {
+        cout << "\n";
+        cout << "No Expenses to Delete." << endl;
+        return;
+    }
+
+    listExpenses(expenses);
+
+    cout << "\n";
+    cout << "Row Number to Delete (1 to " << expenses.size() << "): ";
+    string input;
+    getline(cin, input);
+
+    try {
+        int i = stoi(input) - 1;
+        if (i < 0 || i >= (int)expenses.size()) {
+            cout << "Invalid Number" << endl;
+            return;
+        }
+
+        expenses.erase(expenses.begin() + i);
+        saveExpenses(expenses);
+        cout << "Expense Deleted" << endl;
+    } catch (...) {
+        cout << "Invalid Input." << endl;
+    }
+}
+
 int main() {
     vector<Expense> expenses = loadExpenses();
 
@@ -155,7 +184,8 @@ int main() {
         cout << "\n1. Add Expense" << endl;
         cout << "2. List Expenses" << endl;
         cout << "3. Summary By Category" << endl;
-        cout << "4. Quit" << endl;
+        cout << "4. Delete Expense" << endl;
+        cout << "5. Quit" << endl;
         cout << "Selection: ";
 
         string selection;
@@ -168,11 +198,13 @@ int main() {
         } else if (selection == "3") {
             summaryByCategory(expenses);
         } else if (selection == "4") {
+            deleteExpense(expenses);
+        } else if (selection == "5") {
             cout << "\n";
             cout << "Goodbye!\n" << endl;
             break;
         } else {
-            cout << "work in progress" << endl;
+            cout << "Coming soon." << endl;
         }
     }
 
