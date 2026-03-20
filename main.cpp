@@ -177,6 +177,39 @@ void deleteExpense(vector<Expense>& expenses) {
     }
 }
 
+void searchExpenses(const vector<Expense>& expenses) {
+    if (expenses.empty()) {
+        cout << "\n";
+        cout << "No Expenses yet." << endl;
+        return;
+    }
+
+    cout << "\n";
+    cout << "Enter Keyword: ";
+    string keyword;
+    getline(cin, keyword);
+    transform(keyword.begin(), keyword.end(), keyword.begin(), ::tolower);
+
+    vector<Expense> results;
+    for (const auto& a : expenses) {
+        string desc = a.description;
+        transform(desc.begin(), desc.end(), desc.begin(), ::tolower);
+
+        string cate = a.category;
+        transform(cate.begin(), cate.end(), cate.begin(), ::tolower);
+
+        if (desc.find(keyword) != string::npos || cate.find(keyword) != string::npos) {
+            results.push_back(a);
+        }
+    }
+
+    if (results.empty()) {
+        cout << "No Matches." << endl;
+    } else {
+        listExpenses(results);
+    }
+}
+
 int main() {
     vector<Expense> expenses = loadExpenses();
 
@@ -184,8 +217,9 @@ int main() {
         cout << "\n1. Add Expense" << endl;
         cout << "2. List Expenses" << endl;
         cout << "3. Summary By Category" << endl;
-        cout << "4. Delete Expense" << endl;
-        cout << "5. Quit" << endl;
+        cout << "4. Search Expense" << endl;
+        cout << "5. Delete Expense" << endl;
+        cout << "6. Quit" << endl;
         cout << "Selection: ";
 
         string selection;
@@ -198,13 +232,15 @@ int main() {
         } else if (selection == "3") {
             summaryByCategory(expenses);
         } else if (selection == "4") {
-            deleteExpense(expenses);
+            searchExpenses(expenses);
         } else if (selection == "5") {
+            deleteExpense(expenses);
+        } else if (selection == "6") {
             cout << "\n";
             cout << "Goodbye!\n" << endl;
             break;
         } else {
-            cout << "Coming soon." << endl;
+            cout << "coming soon." << endl;
         }
     }
 
