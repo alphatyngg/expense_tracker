@@ -14,6 +14,7 @@ macOS with clang (xcode-select --install)
 
 compile:
 clang++ -std=c++17 -o expense_tracker main.cpp
+
 run: 
 ./expense_tracker
 
