@@ -84,6 +84,11 @@ void listExpenses(const vector<Expense>& expenses) {
         return;
     }
 
+    vector<Expense> sorted = expenses;
+    sort(sorted.begin(), sorted.end(), [](const Expense& a, const Expense& b) {
+        return a.date < b.date;
+    });
+
     cout << "\n";
     cout << left
          << setw(13) << "Date"
@@ -96,7 +101,7 @@ void listExpenses(const vector<Expense>& expenses) {
 
     double total = 0;
 
-    for (const auto& a : expenses) {
+    for (const auto& a : sorted) {
         cout << left
              << setw(13) << a.date
              << setw(14) << a.category
