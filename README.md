@@ -10,13 +10,13 @@ features:
 - autosaved data to .csv file
 
 how to run:
-macOS with clang (xcode-select --install)
+- macOS with clang (xcode-select --install)
 
 compile:
-clang++ -std=c++17 -o expense_tracker main.cpp
+- clang++ -std=c++17 -o expense_tracker main.cpp
 
 run: 
-./expense_tracker
+- ./expense_tracker
 
 
 work in progress features:
