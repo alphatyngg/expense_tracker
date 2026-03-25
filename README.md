@@ -4,6 +4,7 @@ mini expense tracker project because apparently im an adult now and i need to le
 features:
 - add expenses with date, category, description, and amount
 - list expenses in a formatted table, auto-sorted by date
+- filter expense by month
 - summarize expenses by category
 - search expenses by keyword
 - delete expenses by row number
@@ -20,6 +21,5 @@ run:
 
 
 work in progress features:
-- filter expense by month
-- filter expenses from specific date
+- filter expenses before/after specific date
 - filter expenses in a time period
