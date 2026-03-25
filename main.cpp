@@ -78,6 +78,42 @@ void addExpense(vector<Expense>& expenses) {
     cout << "Expense Saved." << endl;
 }
 
+void printExpenses(const vector<Expense>& expenses) {
+    vector<Expense> sorted = expenses;
+    sort(sorted.begin(), sorted.end(), [](const Expense& a, const Expense& b) {
+        return a.date < b.date;
+    });
+
+    cout << "\n";
+    cout << left
+         << setw(13) << "Date"
+         << setw(14) << "Category"
+         << setw(22) << "Description"
+         << right
+         << setw(9) << "Amount" << endl;
+
+    cout << string(65, '-') << endl;
+
+    double total = 0;
+
+    for (const auto& a : sorted) {
+        cout << left
+             << setw(13) << a.date
+             << setw(14) << a.category
+             << setw(22) << a.description
+             << right 
+             << fixed
+             << setprecision(2)
+             << setw(4) << '$' << a.amount << endl;
+        
+        total += a.amount;
+    }
+
+    cout << string(65, '-') << endl;
+    cout << right << setw(53) << "Total: $"
+         << fixed << setprecision(2) << total << endl;
+}
+
 void listExpenses(const vector<Expense>& expenses) {
     if (expenses.empty()) {
         cout << "\nNo Expenses Yet." << endl;
@@ -113,9 +149,78 @@ void listExpenses(const vector<Expense>& expenses) {
         
         total += a.amount;
     }
+
     cout << string(65, '-') << endl;
     cout << right << setw(53) << "Total: $"
          << fixed << setprecision(2) << total << endl;
+
+    //filtering menu 
+    cout << "\nFilter? " << endl;
+    cout << "1. Month" << endl;
+    cout << "2. Date After..." << endl;
+    cout << "3. Date Before..." << endl;
+    cout << "4. Date Between..." << endl;
+    cout << "5. Exit" << endl;
+
+    string selection;
+    getline(cin, selection);
+
+    if (selection == "1") {
+        cout << "Filter by month: (YYYY-MM or press Enter to skip): ";
+        string month;
+        getline(cin, month);
+
+        if(!month.empty()) {
+            vector<Expense> filtered;
+            for (const auto& a : sorted) {
+                if (a.date.substr(0, 7) == month) {
+                    filtered.push_back(a);
+                }
+            }
+            
+            if (filtered.empty()) {
+                cout << "No Expenses Found for " << month << "." << endl;
+                return;
+            }
+
+            cout << "\n--- Filtered: " << month << "---\n";
+            cout << left
+                 << setw(13) << "Date"
+                 << setw(14) << "Category"
+                 << setw(22) << "Description"
+                 << right
+                 << setw(9) << "Amount" << endl;
+
+            cout << string(65, '-') << endl;
+
+            double ftotal = 0.0;
+            for (const auto& a : filtered) {
+                cout << left
+                     << setw(13) << a.date
+                     << setw(14) << a.category
+                     << setw(22) << a.description
+                     << right 
+                     << fixed
+                     << setprecision(2)
+                     << setw(4) << '$' << a.amount << endl;
+                ftotal += a.amount;
+            }
+
+            cout << string(65, '-') << endl;
+            cout << right << setw(53) << "Total: $"
+                 << fixed << setprecision(2) << ftotal << endl;
+            
+        }
+             
+    } else if (selection == "2") {
+        return;
+    } else if (selection == "3") {
+        return;
+    } else if (selection == "4") {
+        return;
+    } else if (selection == "5") {
+        return;
+    }
 }
 
 void summaryByCategory(const vector<Expense>& expenses) {
@@ -160,7 +265,7 @@ void deleteExpense(vector<Expense>& expenses) {
         return;
     }
 
-    listExpenses(expenses);
+    printExpenses(expenses);
 
     cout << "\n";
     cout << "Row Number to Delete (1 to " << expenses.size() << "): ";
@@ -211,7 +316,7 @@ void searchExpenses(const vector<Expense>& expenses) {
     if (results.empty()) {
         cout << "No Matches." << endl;
     } else {
-        listExpenses(results);
+        printExpenses(results);
     }
 }
 
