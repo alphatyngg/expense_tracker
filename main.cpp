@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -78,7 +79,7 @@ void addExpense(vector<Expense>& expenses) {
     cout << "Expense Saved." << endl;
 }
 
-void printExpenses(const vector<Expense>& expenses) {
+vector<Expense> printExpenses(const vector<Expense>& expenses) {
     vector<Expense> sorted = expenses;
     sort(sorted.begin(), sorted.end(), [](const Expense& a, const Expense& b) {
         return a.date < b.date;
@@ -86,18 +87,21 @@ void printExpenses(const vector<Expense>& expenses) {
 
     cout << "\n";
     cout << left
+         << setw(5) << "#"
          << setw(13) << "Date"
          << setw(14) << "Category"
          << setw(22) << "Description"
          << right
          << setw(9) << "Amount" << endl;
 
-    cout << string(65, '-') << endl;
+    cout << string(70, '-') << endl;
 
-    double total = 0;
+    double total = 0.0;
 
-    for (const auto& a : sorted) {
+    for (int i = 0; i < (int)sorted.size(); i++) {
+        const auto& a = sorted[i];
         cout << left
+             << setw(5) << i + 1
              << setw(13) << a.date
              << setw(14) << a.category
              << setw(22) << a.description
@@ -109,9 +113,11 @@ void printExpenses(const vector<Expense>& expenses) {
         total += a.amount;
     }
 
-    cout << string(65, '-') << endl;
-    cout << right << setw(53) << "Total: $"
+    cout << string(70, '-') << endl;
+    cout << right << setw(58) << "Total: $"
          << fixed << setprecision(2) << total << endl;
+
+    return sorted;
 }
 
 void listExpenses(const vector<Expense>& expenses) {
@@ -120,39 +126,7 @@ void listExpenses(const vector<Expense>& expenses) {
         return;
     }
 
-    vector<Expense> sorted = expenses;
-    sort(sorted.begin(), sorted.end(), [](const Expense& a, const Expense& b) {
-        return a.date < b.date;
-    });
-
-    cout << "\n";
-    cout << left
-         << setw(13) << "Date"
-         << setw(14) << "Category"
-         << setw(22) << "Description"
-         << right
-         << setw(9) << "Amount" << endl;
-
-    cout << string(65, '-') << endl;
-
-    double total = 0;
-
-    for (const auto& a : sorted) {
-        cout << left
-             << setw(13) << a.date
-             << setw(14) << a.category
-             << setw(22) << a.description
-             << right 
-             << fixed
-             << setprecision(2)
-             << setw(4) << '$' << a.amount << endl;
-        
-        total += a.amount;
-    }
-
-    cout << string(65, '-') << endl;
-    cout << right << setw(53) << "Total: $"
-         << fixed << setprecision(2) << total << endl;
+    auto sorted = printExpenses(expenses);
 
     //filtering menu 
     cout << "\nFilter? " << endl;
@@ -161,6 +135,7 @@ void listExpenses(const vector<Expense>& expenses) {
     cout << "3. Date Before..." << endl;
     cout << "4. Date Between..." << endl;
     cout << "5. Exit" << endl;
+    cout << "Selection: ";
 
     string selection;
     getline(cin, selection);
@@ -172,7 +147,7 @@ void listExpenses(const vector<Expense>& expenses) {
 
         if(!month.empty()) {
             vector<Expense> filtered;
-            for (const auto& a : sorted) {
+            for (const auto& a : expenses) {
                 if (a.date.substr(0, 7) == month) {
                     filtered.push_back(a);
                 }
@@ -184,32 +159,7 @@ void listExpenses(const vector<Expense>& expenses) {
             }
 
             cout << "\n--- Filtered: " << month << "---\n";
-            cout << left
-                 << setw(13) << "Date"
-                 << setw(14) << "Category"
-                 << setw(22) << "Description"
-                 << right
-                 << setw(9) << "Amount" << endl;
-
-            cout << string(65, '-') << endl;
-
-            double ftotal = 0.0;
-            for (const auto& a : filtered) {
-                cout << left
-                     << setw(13) << a.date
-                     << setw(14) << a.category
-                     << setw(22) << a.description
-                     << right 
-                     << fixed
-                     << setprecision(2)
-                     << setw(4) << '$' << a.amount << endl;
-                ftotal += a.amount;
-            }
-
-            cout << string(65, '-') << endl;
-            cout << right << setw(53) << "Total: $"
-                 << fixed << setprecision(2) << ftotal << endl;
-            
+            printExpenses(filtered);
         }
              
     } else if (selection == "2") {
@@ -265,21 +215,31 @@ void deleteExpense(vector<Expense>& expenses) {
         return;
     }
 
-    printExpenses(expenses);
+    vector<Expense> sorted = printExpenses(expenses);
 
     cout << "\n";
-    cout << "Row Number to Delete (1 to " << expenses.size() << "): ";
+    cout << "Row Number to Delete (1 to " << sorted.size() << "): ";
     string input;
     getline(cin, input);
 
     try {
         int i = stoi(input) - 1;
-        if (i < 0 || i >= (int)expenses.size()) {
+        if (i < 0 || i >= (int)sorted.size()) {
             cout << "Invalid Number" << endl;
             return;
         }
 
-        expenses.erase(expenses.begin() + i);
+        Expense toDelete = sorted[i];
+        for (int j = 0; j < (int)expenses.size(); j++ ){
+            if (expenses[j].date == toDelete.date &&
+                expenses[j].category == toDelete.category &&
+                expenses[j].description == toDelete.description &&
+                expenses[j].amount == toDelete.amount) {
+                    expenses.erase(expenses.begin() + j);
+                    break;
+                }
+        }
+
         saveExpenses(expenses);
         cout << "Expense Deleted" << endl;
     } catch (...) {
