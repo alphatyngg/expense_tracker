@@ -183,9 +183,29 @@ void listExpenses(const vector<Expense>& expenses) {
             cout << "\n--- After: " << date << "---\n";
             printExpenses(filtered);
         }
-        
+
     } else if (selection == "3") {
-        return;
+        cout << "Show expenses before (YYYY-MM-DD or press Enter to skip): ";
+        string date;
+        getline(cin, date);
+
+        if (!date.empty()) {
+            vector<Expense> filtered;
+            for (const auto& a : sorted) {
+                if (a.date < date) {
+                    filtered.push_back(a);
+                }
+            }
+
+            if (filtered.empty()) {
+                cout << "No Expenses Found before " << date << "." << endl;
+                return;
+            }
+            
+            cout << "\n--- Before: " << date << "---\n";
+            printExpenses(filtered);
+        }
+        
     } else if (selection == "4") {
         return;
     } else if (selection == "5") {
