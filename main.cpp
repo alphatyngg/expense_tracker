@@ -147,7 +147,7 @@ void listExpenses(const vector<Expense>& expenses) {
 
         if(!month.empty()) {
             vector<Expense> filtered;
-            for (const auto& a : expenses) {
+            for (const auto& a : sorted) {
                 if (a.date.substr(0, 7) == month) {
                     filtered.push_back(a);
                 }
@@ -163,7 +163,27 @@ void listExpenses(const vector<Expense>& expenses) {
         }
              
     } else if (selection == "2") {
-        return;
+        cout << "Show expenses after (YYYY-MM-DD or press Enter to skip): ";
+        string date;
+        getline(cin, date);
+
+        if (!date.empty()) {
+            vector<Expense> filtered;
+            for (const auto& a : sorted) {
+                if (a.date > date) {
+                    filtered.push_back(a);
+                }
+            }
+
+            if (filtered.empty()) {
+                cout << "No Expenses Found after " << date << "." << endl;
+                return;
+            }
+            
+            cout << "\n--- After: " << date << "---\n";
+            printExpenses(filtered);
+        }
+        
     } else if (selection == "3") {
         return;
     } else if (selection == "4") {
