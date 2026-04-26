@@ -72,7 +72,14 @@ void addExpense(vector<Expense>& expenses) {
     cout << "Amount ($): ";
     string amount;
     getline(cin, amount);
-    a.amount = stod(amount);        //convert type string -> double
+     
+    try {
+        a.amount = stod(amount);        //convert type string -> double
+    } catch (...) {
+        cout << endl;
+        cout << "\033[31m[WARNING] Invalid Amount. Please Enter a Valid Number.\033[0m" << endl;
+    return;
+}
     
     expenses.push_back(a);          //creates the whole list
     saveExpenses(expenses);
