@@ -141,7 +141,7 @@ void listExpenses(const vector<Expense>& expenses) {
     getline(cin, selection);
 
     if (selection == "1") {
-        cout << "Filter by month: (YYYY-MM or press Enter to skip): ";
+        cout << "Filter by Month: (YYYY-MM or press Enter to skip): ";
         string month;
         getline(cin, month);
 
@@ -160,10 +160,14 @@ void listExpenses(const vector<Expense>& expenses) {
 
             cout << "\n--- Filtered: " << month << "---\n";
             printExpenses(filtered);
+        } else {
+            cout << endl;
+            cout << "\033[31m[WARNING] Please Enter a Valid Month.\033[0m" << endl;
+            listExpenses(expenses);
         }
              
     } else if (selection == "2") {
-        cout << "Show expenses after (YYYY-MM-DD or press Enter to skip): ";
+        cout << "Show Expenses After (YYYY-MM-DD or press Enter to skip): ";
         string date;
         getline(cin, date);
 
@@ -182,10 +186,14 @@ void listExpenses(const vector<Expense>& expenses) {
             
             cout << "\n--- After: " << date << "---\n";
             printExpenses(filtered);
+        } else {
+            cout << endl;
+            cout << "\033[31m[WARNING] Please Enter a Valid Date.\033[0m" << endl;
+            listExpenses(expenses);
         }
 
     } else if (selection == "3") {
-        cout << "Show expenses before (YYYY-MM-DD or press Enter to skip): ";
+        cout << "Show Expenses Before (YYYY-MM-DD or press Enter to skip): ";
         string date;
         getline(cin, date);
 
@@ -204,10 +212,43 @@ void listExpenses(const vector<Expense>& expenses) {
             
             cout << "\n--- Before: " << date << "---\n";
             printExpenses(filtered);
+        } else {
+            cout << endl;
+            cout << "\033[31m[WARNING] Please Enter a Valid Date.\033[0m" << endl;
+            listExpenses(expenses);
         }
-        
+
     } else if (selection == "4") {
-        return;
+        cout << "Start Date (YYYY-MM-DD): ";
+        string startDate;
+        getline(cin, startDate);
+
+        cout << "End Date (YYYY-MM-DD): ";
+        string endDate;
+        getline(cin, endDate);
+
+        if (!startDate.empty() && !endDate.empty()) {
+            vector<Expense> filtered;
+
+            for (const auto& a : sorted) {
+                if (a.date >= startDate && a.date <= endDate) {
+                    filtered.push_back(a);
+                }
+            }
+
+            if (filtered.empty()) {
+                cout << "No expenses found between " << startDate << " and " << endDate << "." << endl;
+                return;
+            }
+
+            cout << "\n--- Between: " << startDate << " and " << endDate << "---\n";
+            printExpenses(filtered);
+        } else {
+            cout << endl;
+            cout << "\033[31m[WARNING] Please Enter Both Dates.\033[0m" << endl;
+            listExpenses(expenses);
+        }
+
     } else if (selection == "5") {
         return;
     }
