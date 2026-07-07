@@ -1,7 +1,7 @@
-# expense_tracker
+# Expense Tracker
 mini expense tracker project because apparently im an adult now and i need to learn how to manage my money better
 
-features:
+## Features:
 - add expenses with date, category, description, and amount
 - list expenses in a formatted table, auto-sorted by date
 - filter expense by month, before and after specific date
@@ -11,15 +11,15 @@ features:
 - delete expenses by row number
 - autosaved data to .csv file
 
-how to run:
+## How to run:
 - macOS with clang (xcode-select --install)
 
-compile:
+## Compile:
 - clang++ -std=c++17 -o expense_tracker main.cpp
 
-run: 
+## Run: 
 - ./expense_tracker
 
 
-work in progress features:
+## Work in progress:
 - n/a
